@@ -28,8 +28,8 @@ BQ_TEMP_PATH = f"{GCS_BUCKET}/temp/"
 MYSQL_CONFIG = {
     "url": "jdbc:mysql://34.59.188.6:3306/hospital_b_db?useSSL=false&allowPublicKeyRetrieval=true",
     "driver": "com.mysql.cj.jdbc.Driver",
-    "user": "myuser",
-    "password": "mypass"
+    "user": "sparkuser",
+    "password": "Spark123!"
 }
 
 ##------------------------------------------------------------------------------------------------------------------##
