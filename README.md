@@ -36,36 +36,36 @@ The entire project was designed with Cloud Composer (Airflow) as the orchestrati
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
+```text
 GCP-HEALTHCARE-PROJECT-MAIN/
 ├── 📁 data/
 │   ├── 📁 BQ/                # BigQuery SQL scripts (Bronze, Silver, Gold layers)
-│   ├── 📁 claims/            # Hospital claim data (CSV files)
-│   ├── 📁 configs/           # Audit table DDLs and load configurations
-│   ├── 📁 cptcodes/          # Current Procedural Terminology (CPT) codes
-│   └── 📁 EMR/               # Electronic Medical Records (Hospitals A & B)
-│       ├── 📁 hospital-a/    # DDLs and CSVs (Patients, Encounters, etc.)
-│       └── 📁 hospital-b/    # DDLs and CSVs (Patients, Encounters, etc.)
-├── 📁 INGESTION/             # Python scripts for data ingestion
+│   ├── 📁 claims/            # Raw Hospital claim CSV files
+│   ├── 📁 configs/           # DDLs and load metadata
+│   ├── 📁 cptcodes/          # CPT reference data
+│   └── 📁 EMR/               # EMR data for Hospital A & B
+│       ├── 📁 hospital-a/    # Source-specific DDLs and CSVs
+│       └── 📁 hospital-b/    # Source-specific DDLs and CSVs
+├── 📁 INGESTION/             # PySpark & Python ETL ingestion scripts
 │   ├── claims.py
 │   ├── cpt_codes.py
 │   ├── hospitalA_mysqlToLanding.py
 │   ├── hospitalB_mysqlToLanding.py
 │   ├── icd_codes.py
 │   └── npi_codes.py
-├── 📁 utils/                 # Utility scripts
-│   └── add_dags_to_composer.py # Script to deploy DAGs to Cloud Composer
+├── 📁 utils/                 # Utility scripts (e.g., CI/CD helpers)
+│   └── add_dags_to_composer.py
 ├── 📁 workflows/             # Airflow DAGs for orchestration
 │   ├── bq_dag.py
 │   ├── parent_dag.py
 │   └── pyspark_dag.py
-├── 📄 cloudbuild.yaml        # GCP CI/CD configuration
-├── 📄 requirements.txt       # Python dependencies
+├── 📄 cloudbuild.yaml        # GCP CI/CD pipeline configuration
+├── 📄 requirements.txt       # Python environment dependencies
 ├── 📄 LICENSE                # Project license
-├── 📄 ProjectNotes.md        # Development notes
+├── 📄 ProjectNotes.md        # Technical debt and development logs
 └── 📄 README.md              # Main documentation
-
 ---
 
 ## Key Features
