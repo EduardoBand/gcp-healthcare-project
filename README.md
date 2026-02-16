@@ -22,13 +22,9 @@ The entire project was designed with Cloud Composer (Airflow) as the orchestrati
 
 ## 🏗️ Architecture & Data Flow
 
-### 1. System Infrastructure
+### System Infrastructure
 This diagram illustrates the cloud infrastructure and the flow of data from on-premise sources to the GCP analytical environment.
 ![System Architecture](architecture/project_architecture.png)
-
-### 2. Workflow & Orchestration
-This diagram details the Airflow DAG logic, showing how task dependencies are managed and how the CI/CD pipeline deploys assets.
-![Workflow Process](architecture/workflow_process.png)
 
 **Sources**
 - Cloud SQL (Hospital A & B – EMR data)
@@ -51,6 +47,9 @@ This diagram details the Airflow DAG logic, showing how task dependencies are ma
   - Deploys DAGs to Composer
   - Uploads required data/SQL files to the Composer bucket
 - Enables automated deployment and version-controlled workflows
+
+This diagram details the Airflow DAG logic, showing how task dependencies are managed and how the CI/CD pipeline deploys assets.
+![Workflow Process](architecture/workflow_process.png)
 
 ---
 
