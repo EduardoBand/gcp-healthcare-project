@@ -1,4 +1,12 @@
-# Healthcare Revenue Cycle Management – GCP Data Engineering Project
+# Healthcare Revenue Cycle Management (RCM) – GCP Data Engineering Project
+
+## 📖 Table of Contents
+1. [Overview](#-overview)
+2. [Architecture & Data Flow](#%EF%B8%8F-architecture--data-flow)
+3. [Project Structure](#-project-structure)
+4. [Technology Stack](#%EF%B8%8F-technology-stack)
+5. [Key Features](#-key-features)
+6. [Security Considerations](#-security-considerations)
 
 ## Overview
 
@@ -11,6 +19,16 @@ The entire project was designed with Cloud Composer (Airflow) as the orchestrati
 ---
 
 ## Architecture Summary
+
+## 🏗️ Architecture & Data Flow
+
+### 1. System Infrastructure
+This diagram illustrates the cloud infrastructure and the flow of data from on-premise sources to the GCP analytical environment.
+![System Architecture](architecture/project_architecture.png)
+
+### 2. Workflow & Orchestration
+This diagram details the Airflow DAG logic, showing how task dependencies are managed and how the CI/CD pipeline deploys assets.
+![Workflow Process](architecture/workflow_process.png)
 
 **Sources**
 - Cloud SQL (Hospital A & B – EMR data)
