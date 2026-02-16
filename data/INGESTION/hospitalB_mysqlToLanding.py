@@ -4,14 +4,20 @@ from pyspark.sql import SparkSession
 import datetime
 import json
 
+
 # Initialize GCS & BigQuery Clients
 storage_client = storage.Client()
 bq_client = bigquery.Client()
 
 # Initialize Spark Session
-spark = SparkSession.builder.appName("HospitalAMySQLToLanding").getOrCreate()
+spark = SparkSession.builder \
+    .appName("HospitalBMySQLToLanding") \
+    .config("spark.jars.packages",
+            "com.google.cloud.spark:spark-bigquery-with-dependencies_2.12:0.36.1") \
+    .getOrCreate()
 
-# Google Cloud Storage (GCS) Configuration
+
+# GCS config
 GCS_BUCKET = "healthcare-bucket15041994"
 HOSPITAL_NAME = "hospital-b"
 LANDING_PATH = f"gs://{GCS_BUCKET}/landing/{HOSPITAL_NAME}/"
@@ -19,18 +25,27 @@ ARCHIVE_PATH = f"gs://{GCS_BUCKET}/landing/{HOSPITAL_NAME}/archive/"
 CONFIG_FILE_PATH = f"gs://{GCS_BUCKET}/configs/load_config.csv"
 
 # BigQuery Configuration
+
 BQ_PROJECT = "healthcare-project-487014"
 BQ_AUDIT_TABLE = f"{BQ_PROJECT}.temp_dataset.audit_log"
 BQ_LOG_TABLE = f"{BQ_PROJECT}.temp_dataset.pipeline_logs"
-BQ_TEMP_PATH = f"{GCS_BUCKET}/temp/"  
+BQ_TEMP_PATH = f"gs://{GCS_BUCKET}/temp/"
 
-# MySQL Configuration
+# ==============================
+# MySQL / Cloud SQL Configuration
+# ==============================
+
+MYSQL_HOST = "34.44.141.45"
+MYSQL_PORT = "3306"
+MYSQL_DATABASE = "hospital_b_db"
+
 MYSQL_CONFIG = {
-    "url": "jdbc:mysql://34.59.188.6:3306/hospital_b_db?useSSL=false&allowPublicKeyRetrieval=true",
+    "url": "jdbc:mysql://34.44.141.45:3306/hospital_b_db?useSSL=false&allowPublicKeyRetrieval=true",
     "driver": "com.mysql.cj.jdbc.Driver",
-    "user": "sparkuser",
-    "password": "Spark123!"
+    "user": "myuser",
+    "password": "Edu1234*"
 }
+
 
 ##------------------------------------------------------------------------------------------------------------------##
 # Logging Mechanism
@@ -74,7 +89,7 @@ def save_logs_to_bigquery():
             .save()
         print("✅ Logs stored in BigQuery for future analysis")
     
-##------------------------------------------------------------------------------------------------------------------##
+##------------------------------------------------------------------------------------------------------------------#
 
 # Function to Move Existing Files to Archive
 def move_existing_files_to_archive(table):
@@ -104,6 +119,9 @@ def move_existing_files_to_archive(table):
         
 ##------------------------------------------------------------------------------------------------------------------##
 
+
+##------------------------------------------------------------------------------------------------------------------##
+
 # Function to Get Latest Watermark from BigQuery Audit Table
 def get_latest_watermark(table_name):
     query = f"""
@@ -117,7 +135,7 @@ def get_latest_watermark(table_name):
         return row.latest_timestamp if row.latest_timestamp else "1900-01-01 00:00:00"
     return "1900-01-01 00:00:00"
 
-##------------------------------------------------------------------------------------------------------------------##
+##--------------
 
 # Function to Extract Data from MySQL and Save to GCS
 def extract_and_save_to_landing(table, load_type, watermark_col):
@@ -170,7 +188,7 @@ def read_config_file():
     log_event("INFO", "✅ Successfully read the config file")
     return df
 
-# read config file
+# Read config File
 config_df = read_config_file()
 
 for row in config_df.collect():

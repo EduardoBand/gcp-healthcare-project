@@ -31,3 +31,5 @@ claims_df = claims_df.dropDuplicates()
             .option("temporaryGcsBucket", TEMP_GCS_BUCKET)
             .mode("overwrite")
             .save())
+
+print('claims done')

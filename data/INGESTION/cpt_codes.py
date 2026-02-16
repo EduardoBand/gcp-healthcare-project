@@ -18,7 +18,7 @@ cptcodes_df = spark.read.csv(CPT_BUCKET_PATH, header=True)
 for col in cptcodes_df.columns:
     new_col = col.replace(" ", "_").lower()
     cptcodes_df = cptcodes_df.withColumnRenamed(col, new_col)
-
+    
 # write to bigquery
 (cptcodes_df.write
             .format("bigquery")
@@ -26,3 +26,5 @@ for col in cptcodes_df.columns:
             .option("temporaryGcsBucket", TEMP_GCS_BUCKET)
             .mode("overwrite")
             .save())
+
+print('cpt_codes done')
