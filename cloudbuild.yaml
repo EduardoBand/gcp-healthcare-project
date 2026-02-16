@@ -1,10 +1,38 @@
+# ============================================================================================
+# File: cloudbuild.yaml
+# Project: healthcare-project-487014
+#
+# Description:
+#   Cloud Build pipeline responsible for deploying Airflow DAGs and
+#   supporting data files to the Composer GCS bucket.
+#
+#   Trigger:
+#       - Automatically executed when code is updated in the repository.
+#
+#   Flow:
+#       1. Install required Python dependencies
+#       2. Execute utility script to upload:
+#           - DAGs directory
+#           - Data directory
+#       3. Log output to Cloud Logging
+# ============================================================================================
+
 steps:
-  # Step 1: Install Python dependencies
+
+  # ------------------------------------------------------------------------------------------
+  # Step 1: Install Python dependencies required by the upload utility
+  # ------------------------------------------------------------------------------------------
   - name: 'python'
     entrypoint: pip
-    args: ["install", "-r", "utils/requirements.txt", "--user"]
+    args:
+      - "install"
+      - "-r"
+      - "utils/requirements.txt"
+      - "--user"
 
-  # Step 2: Run the script to upload DAGs and Data to Composer bucket
+  # ------------------------------------------------------------------------------------------
+  # Step 2: Upload DAGs and Data files to Composer bucket
+  # ------------------------------------------------------------------------------------------
   - name: 'python'
     entrypoint: python
     args:
@@ -13,10 +41,19 @@ steps:
       - "--dags_bucket=${_DAGS_BUCKET}"
       - "--data_directory=${_DATA_DIRECTORY}"
 
+# ============================================================================================
+# BUILD OPTIONS
+# ============================================================================================
+
 options:
   logging: CLOUD_LOGGING_ONLY
 
+
+# ============================================================================================
+# SUBSTITUTIONS (Environment Configuration)
+# ============================================================================================
+
 substitutions:
   _DAGS_DIRECTORY: "workflows/"
-  _DAGS_BUCKET: "us-east1-demo-instance-a60ecfc7-bucket" # Replace with your Composer bucket
+  _DAGS_BUCKET: "us-east1-demo-instance-a60ecfc7-bucket"
   _DATA_DIRECTORY: "data/"

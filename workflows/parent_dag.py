@@ -1,11 +1,34 @@
+"""
+============================================================================================
+File: parent_dag.py
+Project: healthcare-project-487014
+Layer: Orchestration (Master Scheduler)
+
+Description:
+    Parent orchestration DAG responsible for coordinating the execution
+    of the full data pipeline.
+
+    Execution Flow:
+        1. Trigger PySpark ingestion/transformation DAG
+        2. After successful completion, trigger BigQuery transformation DAG
+
+    This DAG is externally triggered (Cloud Build → Composer) and does not
+    run on a schedule.
+============================================================================================
+"""
+
 import airflow
 from airflow import DAG
 from datetime import timedelta
 from airflow.utils.dates import days_ago
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
 
-# Define default arguments
-ARGS = {
+
+# ============================================================================================
+# DEFAULT DAG ARGUMENTS
+# ============================================================================================
+
+DEFAULT_ARGS = {
     "owner": "EDUARDO BANDEIRA",
     "start_date": days_ago(1),
     "depends_on_past": False,
@@ -14,31 +37,43 @@ ARGS = {
     "email": ["***@gmail.com"],
     "email_on_success": False,
     "retries": 1,
-    "retry_delay": timedelta(minutes=5)
+    "retry_delay": timedelta(minutes=5),
 }
 
-# Define the parent DAG
+
+# ============================================================================================
+# DAG DEFINITION
+# ============================================================================================
+
 with DAG(
     dag_id="parent_dag",
-    schedule_interval="0 5 * * *",
-    description="Parent DAG to trigger PySpark and BigQuery DAGs",
-    default_args=ARGS,
-    tags=["parent", "orchestration", "etl"]
+    schedule_interval="0 5 * * *",  
+    description="Parent DAG that orchestrates PySpark and BigQuery pipelines.",
+    default_args=DEFAULT_ARGS,
+    tags=["orchestration", "parent", "etl"],
 ) as dag:
 
-    # Task to trigger PySpark DAG
+    # ----------------------------------------------------------------------------------------
+    # Trigger PySpark DAG
+    # ----------------------------------------------------------------------------------------
     trigger_pyspark_dag = TriggerDagRunOperator(
         task_id="trigger_pyspark_dag",
         trigger_dag_id="pyspark_dag",
         wait_for_completion=True,
     )
 
-    # Task to trigger BigQuery DAG
+    # ----------------------------------------------------------------------------------------
+    # Trigger BigQuery DAG
+    # ----------------------------------------------------------------------------------------
     trigger_bigquery_dag = TriggerDagRunOperator(
         task_id="trigger_bigquery_dag",
         trigger_dag_id="bigquery_dag",
         wait_for_completion=True,
     )
 
-# Define dependencies
+
+# ============================================================================================
+# TASK DEPENDENCIES
+# ============================================================================================
+
 trigger_pyspark_dag >> trigger_bigquery_dag

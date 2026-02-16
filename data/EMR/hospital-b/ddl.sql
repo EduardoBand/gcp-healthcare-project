@@ -1,81 +1,120 @@
--- For database hospital_b_db:
+/* ============================================================================================
 
--- 2. Departments Table:
+   Description:
+       This script defines the OLTP schema for Hospital B source system.
+       These tables represent the operational database extracted into the
+       landing layer before transformation within the Medallion Architecture
+       (Bronze → Silver → Gold).
+
+       Note:
+       Hospital B contains structural differences compared to Hospital A,
+       particularly in the Patients table (different column names), which
+       requires transformation and standardization in the Silver layer.
+
+       Entities Covered:
+         - Departments
+         - Encounters
+         - Patients
+         - Providers
+         - Transactions
+   ============================================================================================ */
+
+
+-- =============================================================================================
+-- 1. DEPARTMENTS TABLE
+-- Stores hospital department master data.
+-- =============================================================================================
 
 CREATE TABLE departments (
-    DeptID nvarchar(50) NOT NULL,
-    Name nvarchar(50) NOT NULL,
+    DeptID NVARCHAR(50) NOT NULL,
+    Name NVARCHAR(50) NOT NULL,
     CONSTRAINT PK_departments PRIMARY KEY (DeptID)
 );
 
--- 2. Encounters Table:
+
+-- =============================================================================================
+-- 2. ENCOUNTERS TABLE
+-- Represents patient visits and clinical interactions within departments.
+-- =============================================================================================
 
 CREATE TABLE encounters (
-    EncounterID nvarchar(50) NOT NULL,
-    PatientID nvarchar(50) NOT NULL,
-    EncounterDate date NOT NULL,
-    EncounterType nvarchar(50) NOT NULL,
-    ProviderID nvarchar(50) NOT NULL,
-    DepartmentID nvarchar(50) NOT NULL,
-    ProcedureCode int NOT NULL,
-    InsertedDate date NOT NULL,
-    ModifiedDate date NOT NULL,
+    EncounterID NVARCHAR(50) NOT NULL,
+    PatientID NVARCHAR(50) NOT NULL,
+    EncounterDate DATE NOT NULL,
+    EncounterType NVARCHAR(50) NOT NULL,
+    ProviderID NVARCHAR(50) NOT NULL,
+    DepartmentID NVARCHAR(50) NOT NULL,
+    ProcedureCode INT NOT NULL,
+    InsertedDate DATE NOT NULL,
+    ModifiedDate DATE NOT NULL,
     CONSTRAINT PK_encounters PRIMARY KEY (EncounterID)
 );
 
--- 3. Hospital2_Patient_Data Table:
+
+-- =============================================================================================
+-- 3. PATIENTS TABLE
+-- Contains patient demographic information.
+-- Column naming differs from Hospital A and must be standardized downstream.
+-- =============================================================================================
 
 CREATE TABLE patients (
-    ID nvarchar(50) NOT NULL,
-    F_Name nvarchar(50) NOT NULL,
-    L_Name nvarchar(50) NOT NULL,
-    M_Name nvarchar(50) NOT NULL,
-    SSN nvarchar(50) NOT NULL,
-    PhoneNumber nvarchar(50) NOT NULL,
-    Gender nvarchar(50) NOT NULL,
-    DOB date NOT NULL,
-    Address nvarchar(100) NOT NULL,
-    ModifiedDate date NOT NULL,
+    ID NVARCHAR(50) NOT NULL,
+    F_Name NVARCHAR(50) NOT NULL,
+    L_Name NVARCHAR(50) NOT NULL,
+    M_Name NVARCHAR(50) NOT NULL,
+    SSN NVARCHAR(50) NOT NULL,
+    PhoneNumber NVARCHAR(50) NOT NULL,
+    Gender NVARCHAR(50) NOT NULL,
+    DOB DATE NOT NULL,
+    Address NVARCHAR(100) NOT NULL,
+    ModifiedDate DATE NOT NULL,
     CONSTRAINT PK_patients PRIMARY KEY (ID)
 );
 
 
--- 4. Providers Table:
+-- =============================================================================================
+-- 4. PROVIDERS TABLE
+-- Stores provider master data including specialization and department mapping.
+-- =============================================================================================
 
 CREATE TABLE providers (
-    ProviderID nvarchar(50) NOT NULL,
-    FirstName nvarchar(50) NOT NULL,
-    LastName nvarchar(50) NOT NULL,
-    Specialization nvarchar(50) NOT NULL,
-    DeptID nvarchar(50) NOT NULL,
-    NPI bigint NOT NULL,
+    ProviderID NVARCHAR(50) NOT NULL,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Specialization NVARCHAR(50) NOT NULL,
+    DeptID NVARCHAR(50) NOT NULL,
+    NPI BIGINT NOT NULL,
     CONSTRAINT PK_providers PRIMARY KEY (ProviderID)
 );
 
 
--- 5. Transactions Table:
+-- =============================================================================================
+-- 5. TRANSACTIONS TABLE
+-- Financial and billing records associated with patient encounters.
+-- Includes claim, payor, and diagnostic information.
+-- =============================================================================================
 
 CREATE TABLE transactions (
-    TransactionID nvarchar(50) NOT NULL,
-    EncounterID nvarchar(50) NOT NULL,
-    PatientID nvarchar(50) NOT NULL,
-    ProviderID nvarchar(50) NOT NULL,
-    DeptID nvarchar(50) NOT NULL,
-    VisitDate date NOT NULL,
-    ServiceDate date NOT NULL,
-    PaidDate date NOT NULL,
-    VisitType nvarchar(50) NOT NULL,
-    Amount float NOT NULL,
-    AmountType nvarchar(50) NOT NULL,
-    PaidAmount float NOT NULL,
-    ClaimID nvarchar(50) NOT NULL,
-    PayorID nvarchar(50) NOT NULL,
-    ProcedureCode int NOT NULL,
-    ICDCode nvarchar(50) NOT NULL,
-    LineOfBusiness nvarchar(50) NOT NULL,
-    MedicaidID nvarchar(50) NOT NULL,
-    MedicareID nvarchar(50) NOT NULL,
-    InsertDate date NOT NULL,
-    ModifiedDate date NOT NULL,
+    TransactionID NVARCHAR(50) NOT NULL,
+    EncounterID NVARCHAR(50) NOT NULL,
+    PatientID NVARCHAR(50) NOT NULL,
+    ProviderID NVARCHAR(50) NOT NULL,
+    DeptID NVARCHAR(50) NOT NULL,
+    VisitDate DATE NOT NULL,
+    ServiceDate DATE NOT NULL,
+    PaidDate DATE NOT NULL,
+    VisitType NVARCHAR(50) NOT NULL,
+    Amount FLOAT NOT NULL,
+    AmountType NVARCHAR(50) NOT NULL,
+    PaidAmount FLOAT NOT NULL,
+    ClaimID NVARCHAR(50) NOT NULL,
+    PayorID NVARCHAR(50) NOT NULL,
+    ProcedureCode INT NOT NULL,
+    ICDCode NVARCHAR(50) NOT NULL,
+    LineOfBusiness NVARCHAR(50) NOT NULL,
+    MedicaidID NVARCHAR(50) NOT NULL,
+    MedicareID NVARCHAR(50) NOT NULL,
+    InsertDate DATE NOT NULL,
+    ModifiedDate DATE NOT NULL,
     CONSTRAINT PK_transactions PRIMARY KEY (TransactionID)
 );
