@@ -66,8 +66,6 @@ GCP-HEALTHCARE-PROJECT-MAIN/
 ├── 📄 LICENSE                # Project license
 ├── 📄 ProjectNotes.md        # Technical debt and development logs
 └── 📄 README.md              # Main documentation
----
-
 ```
 ## Key Features
 
