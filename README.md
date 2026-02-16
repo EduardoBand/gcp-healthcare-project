@@ -68,6 +68,7 @@ GCP-HEALTHCARE-PROJECT-MAIN/
 └── 📄 README.md              # Main documentation
 ---
 
+```
 ## Key Features
 
 - Medallion Architecture (Bronze → Silver → Gold)
