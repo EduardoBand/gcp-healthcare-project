@@ -35,6 +35,21 @@ This diagram illustrates the cloud infrastructure and the flow of data from on-p
 - PySpark jobs on Dataproc (data ingestion and raw processing)
 - BigQuery transformations (Bronze, Silver, Gold layers)
 
+## ⚙️ Data Processing Details
+
+### Bronze Layer (Raw)
+* **Strategy:** BigQuery External Tables.
+* **Format:** JSON source files stored in GCS.
+* **Reasoning:** Reduces storage overhead and ensures the Silver layer always pulls the latest raw data directly from the landing zone without redundant ingestion steps.
+
+### Silver Layer (Cleansed)
+* **Strategy:** BigQuery Native Tables.
+* **Operations:** Schema enforcement, deduplication, and data type casting.
+
+### Gold Layer (Curated)
+* **Strategy:** Star Schema (Facts and Dimensions).
+* **Logic:** Business logic application, SCD Type 2 tracking, and KPI aggregation.
+
 **Orchestration**
 - Cloud Composer (Airflow DAGs)
 - Parent DAG coordinates the full workflow
